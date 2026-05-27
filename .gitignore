@@ -1,6 +1,5 @@
 chroma_db/
 data/
-knowledge_base/
 .env
 check_models.py
 __pycache__
