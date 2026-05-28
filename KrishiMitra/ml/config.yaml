@@ -1,0 +1,44 @@
+# ──────────────────────────────────────────────────────────────────────
+# KrishiMitra — Fertilizer Recommendation Model Configuration
+# ──────────────────────────────────────────────────────────────────────
+# ── Paths ──
+data:
+  raw_path: "data/raw/fertilizer_data.csv"
+  processed_dir: "data/processed"
+model:
+  save_dir: "models"
+  filename: "fertilizer_model.pkl"
+  label_encoder: "fertilizer_label_encoder.pkl"
+  feature_encoders: "fertilizer_feature_encoders.pkl"
+  scaler: "fertilizer_scaler.pkl"
+# ── Features ──
+features:
+  numerical:
+    - Temparature       # Note: original dataset uses this spelling
+    - "Humidity "       # Note: original dataset has trailing space
+    - Moisture
+    - Nitrogen
+    - Potassium
+    - Phosphorous
+  categorical:
+    - "Soil Type"
+    - "Crop Type"
+target: "Fertilizer Name"
+# ── Training ──
+training:
+  test_size: 0.2
+  random_seed: 42
+  cv_folds: 5
+  # Data augmentation: how many synthetic samples to generate per original row
+  augmentation_factor: 10
+# ── Model Hyperparameters (RandomForest) ──
+random_forest:
+  n_estimators: 200
+  max_depth: null         # null = unlimited
+  min_samples_split: 2
+  min_samples_leaf: 1
+  class_weight: "balanced"
+# ── Experiment Logging ──
+logging:
+  log_dir: "ml_logs"
+  log_file: "experiment_log.json"

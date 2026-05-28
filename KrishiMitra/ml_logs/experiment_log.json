@@ -1,0 +1,58 @@
+[
+  {
+    "timestamp": "2026-05-28T14:02:19.089444",
+    "config": {
+      "n_estimators": 200,
+      "max_depth": null,
+      "augmentation_factor": 10,
+      "test_size": 0.2
+    },
+    "results": {
+      "cv_accuracy_mean": 1.0,
+      "cv_accuracy_std": 0.0,
+      "cv_f1_mean": 1.0,
+      "cv_f1_std": 0.0,
+      "test_accuracy": 1.0,
+      "test_f1": 1.0,
+      "train_time_seconds": 1.49
+    },
+    "feature_importances": {
+      "Phosphorous": 0.3513,
+      "Nitrogen": 0.2397,
+      "Potassium": 0.2058,
+      "Moisture": 0.0797,
+      "Crop Type": 0.0654,
+      "Soil Type": 0.0219,
+      "Humidity": 0.0185,
+      "Temparature": 0.0177
+    }
+  },
+  {
+    "timestamp": "2026-05-28T14:55:01.596342",
+    "config": {
+      "n_estimators": 200,
+      "max_depth": null,
+      "augmentation_factor": 10,
+      "test_size": 0.2
+    },
+    "results": {
+      "cv_accuracy_mean": 1.0,
+      "cv_accuracy_std": 0.0,
+      "cv_f1_mean": 1.0,
+      "cv_f1_std": 0.0,
+      "test_accuracy": 1.0,
+      "test_f1": 1.0,
+      "train_time_seconds": 1.39
+    },
+    "feature_importances": {
+      "Phosphorous": 0.3513,
+      "Nitrogen": 0.2397,
+      "Potassium": 0.2058,
+      "Moisture": 0.0797,
+      "Crop Type": 0.0654,
+      "Soil Type": 0.0219,
+      "Humidity": 0.0185,
+      "Temparature": 0.0177
+    }
+  }
+]
