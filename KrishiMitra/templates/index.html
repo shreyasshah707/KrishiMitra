@@ -1,0 +1,1993 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KrishiMitra — AI Agricultural Advisor & Intelligence Dashboard</title>
+    <!-- Modern Typography & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-dark: #0a0f0d;
+            --bg-card: rgba(18, 28, 22, 0.45);
+            --border-glow: rgba(52, 211, 153, 0.2);
+            --border-hover: rgba(52, 211, 153, 0.4);
+            --primary: #10b981;
+            --primary-glow: rgba(16, 185, 129, 0.4);
+            --primary-light: #34d399;
+            --accent: #3b82f6;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --glass-blur: blur(16px);
+            --radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) var(--bg-dark);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(16, 185, 129, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(59, 130, 246, 0.08) 0%, transparent 40%);
+            background-attachment: fixed;
+        }
+
+        h1, h2, h3, h4, .brand-text {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+        }
+
+        /* Layout */
+        header {
+            background: rgba(10, 15, 13, 0.8);
+            backdrop-filter: var(--glass-blur);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 1.25rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+            color: var(--primary);
+            filter: drop-shadow(0 0 8px var(--primary-glow));
+            animation: pulse-slow 3s infinite;
+        }
+
+        .logo-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-badge {
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid var(--primary);
+            color: var(--primary-light);
+            font-size: 0.7rem;
+            padding: 0.15rem 0.5rem;
+            border-radius: 20px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .server-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.03);
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            box-shadow: 0 0 8px var(--primary);
+        }
+
+        .main-container {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            max-width: 1600px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 2rem;
+            gap: 2rem;
+        }
+
+        /* Sidebar Navigation */
+        aside {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .nav-card {
+            background: var(--bg-card);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--border-glow);
+            border-radius: var(--radius);
+            padding: 1.5rem 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            padding-left: 0.75rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.85rem 1rem;
+            border-radius: 10px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+
+        .nav-item i {
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .nav-item:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.03);
+            border-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-item.active {
+            color: var(--primary-light);
+            background: rgba(16, 185, 129, 0.08);
+            border-color: var(--border-glow);
+            box-shadow: inset 0 0 12px rgba(16, 185, 129, 0.05);
+        }
+
+        .nav-item.active i {
+            color: var(--primary-light);
+            text-shadow: 0 0 8px var(--primary-glow);
+        }
+
+        /* Content Area */
+        main {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            min-width: 0; /* Prevents flex items from overflowing */
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .tab-content.active {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* Cards & Forms */
+        .glass-card {
+            background: var(--bg-card);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--border-glow);
+            border-radius: var(--radius);
+            padding: 2rem;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .glass-card:hover {
+            border-color: var(--border-hover);
+            box-shadow: 0 8px 32px 0 rgba(16, 185, 129, 0.05);
+        }
+
+        .card-header-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.35rem;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .card-title i {
+            color: var(--primary-light);
+        }
+
+        .card-description {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: -1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Input Controls */
+        .grid-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .label-flex {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .input-value {
+            color: var(--primary-light);
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+        }
+
+        .range-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            box-shadow: 0 0 8px var(--primary-glow);
+            transition: var(--transition);
+        }
+
+        .range-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            background: var(--primary-light);
+        }
+
+        .select-input, .text-input {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            outline: none;
+            transition: var(--transition);
+            width: 100%;
+        }
+
+        .select-input:focus, .text-input:focus {
+            border-color: var(--primary);
+            background: rgba(16, 185, 129, 0.03);
+            box-shadow: 0 0 8px rgba(16, 185, 129, 0.1);
+        }
+
+        /* Buttons */
+        .btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border: none;
+            border-radius: 8px;
+            padding: 0.9rem 2rem;
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            transition: var(--transition);
+            box-shadow: 0 4px 14px 0 var(--primary-glow);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            width: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px 0 var(--primary-glow);
+            filter: brightness(1.1);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border-glow);
+            color: var(--primary-light);
+            box-shadow: none;
+        }
+
+        .btn-outline:hover {
+            background: rgba(16, 185, 129, 0.05);
+            border-color: var(--primary);
+        }
+
+        .btn-flex-group {
+            display: flex;
+            gap: 1rem;
+        }
+
+        /* Preset Chips */
+        .presets-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            align-items: center;
+        }
+
+        .preset-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-right: 0.5rem;
+        }
+
+        .preset-chip {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 0.35rem 0.85rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .preset-chip:hover {
+            border-color: var(--primary);
+            color: var(--primary-light);
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        /* Results / Output Presentation */
+        .results-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 2rem;
+        }
+
+        .metrics-summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .mini-result-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .mini-result-title {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .mini-result-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .mini-result-footer {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* Soil Circular Score */
+        .soil-score-flex {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .circle-progress-wrapper {
+            position: relative;
+            width: 70px;
+            height: 70px;
+        }
+
+        .circle-progress {
+            transform: rotate(-90deg);
+            width: 100%;
+            height: 100%;
+        }
+
+        .circle-progress-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.05);
+            stroke-width: 4px;
+        }
+
+        .circle-progress-bar {
+            fill: none;
+            stroke: var(--primary);
+            stroke-width: 4px;
+            stroke-dasharray: 220;
+            stroke-dashoffset: 220;
+            transition: stroke-dashoffset 1s ease-out;
+            stroke-linecap: round;
+        }
+
+        .circle-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.15rem;
+            font-weight: 700;
+            font-family: 'Outfit', sans-serif;
+            color: var(--text-main);
+        }
+
+        /* Yield and Irrigation Bars */
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 0.25rem;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+            border-radius: 4px;
+            transition: width 1s ease-out;
+        }
+
+        /* AI Advisor Report Box */
+        .ai-report-box {
+            background: rgba(16, 185, 129, 0.03);
+            border: 1px solid rgba(16, 185, 129, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .ai-report-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--primary-light);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid rgba(16, 185, 129, 0.1);
+            padding-bottom: 0.5rem;
+        }
+
+        .ai-report-body {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--text-main);
+            white-space: pre-wrap;
+        }
+
+        .ai-report-body h3 {
+            color: var(--primary-light);
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .ai-report-body p {
+            margin-bottom: 0.75rem;
+        }
+
+        .ai-report-body ul, .ai-report-body ol {
+            margin-left: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        /* File Upload Area */
+        .upload-area {
+            border: 2px dashed rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius);
+            padding: 3rem 2rem;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.01);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .upload-area:hover, .upload-area.dragging {
+            border-color: var(--primary);
+            background: rgba(16, 185, 129, 0.02);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--text-muted);
+            transition: var(--transition);
+        }
+
+        .upload-area:hover .upload-icon {
+            color: var(--primary-light);
+            transform: scale(1.1);
+        }
+
+        #file-input {
+            display: none;
+        }
+
+        .preview-container {
+            display: none;
+            position: relative;
+            max-width: 300px;
+            margin: 1.5rem auto;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .image-preview {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .remove-preview {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(0, 0, 0, 0.6);
+            border: none;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .remove-preview:hover {
+            background: #ef4444;
+        }
+
+        /* Voice Chat Mic Button */
+        .voice-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 2rem;
+            gap: 1.5rem;
+        }
+
+        .mic-button-wrapper {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mic-button {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border: none;
+            color: white;
+            font-size: 2.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            transition: var(--transition);
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
+        }
+
+        .mic-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 30px rgba(16, 185, 129, 0.4);
+        }
+
+        .mic-button.recording {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            box-shadow: 0 8px 24px rgba(239, 68, 68, 0.4);
+            animation: record-pulse 1.5s infinite;
+        }
+
+        .pulse-ring {
+            position: absolute;
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+            opacity: 0;
+            z-index: 1;
+            transition: var(--transition);
+        }
+
+        .mic-button.recording + .pulse-ring {
+            animation: ring-expand 1.5s infinite;
+            border-color: #ef4444;
+        }
+
+        .voice-status-text {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        .audio-player-container {
+            display: none;
+            width: 100%;
+            max-width: 400px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 12px;
+            margin-top: 1rem;
+            flex-direction: column;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .audio-player {
+            width: 100%;
+            height: 40px;
+            outline: none;
+        }
+
+        /* Mandi Rates Table */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            margin-top: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.95rem;
+        }
+
+        th {
+            background: rgba(255, 255, 255, 0.02);
+            color: var(--text-muted);
+            font-weight: 600;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            color: var(--text-main);
+        }
+
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.01);
+        }
+
+        .price-badge {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--primary-light);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+        }
+
+        /* Loader Overlay */
+        .loader-overlay {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 15, 13, 0.85);
+            z-index: 10;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 1.5rem;
+            border-radius: var(--radius);
+            backdrop-filter: blur(4px);
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(16, 185, 129, 0.1);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s infinite linear;
+            filter: drop-shadow(0 0 8px var(--primary-glow));
+        }
+
+        .loading-text {
+            color: var(--text-main);
+            font-weight: 500;
+            font-size: 1.05rem;
+            letter-spacing: 0.5px;
+        }
+
+        /* Info Alerts */
+        .info-alert {
+            background: rgba(59, 130, 246, 0.05);
+            border: 1px solid rgba(59, 130, 246, 0.15);
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            color: #93c5fd;
+            font-size: 0.9rem;
+            display: flex;
+            gap: 0.75rem;
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-alert i {
+            font-size: 1.1rem;
+            margin-top: 0.1rem;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse-slow {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.05); }
+        }
+
+        @keyframes record-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+            70% { box-shadow: 0 0 0 20px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        @keyframes ring-expand {
+            0% { transform: scale(0.9); opacity: 0.6; }
+            100% { transform: scale(1.4); opacity: 0; }
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: auto;
+            background: rgba(10, 15, 13, 0.9);
+        }
+
+        /* Responsiveness */
+        @media (max-width: 992px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+            aside {
+                display: none; /* In production, we'd have a mobile drawer */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-container" onclick="showTab('advisor')">
+            <i class="fa-solid fa-wheat-awn logo-icon"></i>
+            <div style="display: flex; flex-direction: column;">
+                <span class="logo-title">KrishiMitra</span>
+            </div>
+            <span class="logo-badge">Agri-AI</span>
+        </div>
+        <div class="server-status">
+            <div class="status-dot"></div>
+            <span>FastAPI Server Online</span>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- Sidebar Navigation -->
+        <aside>
+            <div class="nav-card">
+                <div class="nav-title">Intelligence Core</div>
+                <div class="nav-item active" onclick="switchTab(this, 'advisor')">
+                    <i class="fa-solid fa-network-wired"></i>
+                    <span>Unified Advisor</span>
+                </div>
+                <div class="nav-item" onclick="switchTab(this, 'planner')">
+                    <i class="fa-solid fa-flask"></i>
+                    <span>Fertilizer Planner</span>
+                </div>
+                <div class="nav-item" onclick="switchTab(this, 'diagnose')">
+                    <i class="fa-solid fa-leaf"></i>
+                    <span>Leaf Diagnosis</span>
+                </div>
+                
+                <div class="nav-title" style="margin-top: 1rem;">Farmer Tools</div>
+                <div class="nav-item" onclick="switchTab(this, 'voice')">
+                    <i class="fa-solid fa-microphone"></i>
+                    <span>Voice Assistant</span>
+                </div>
+                <div class="nav-item" onclick="switchTab(this, 'mandi')">
+                    <i class="fa-solid fa-store"></i>
+                    <span>Mandi Market Rates</span>
+                </div>
+                <div class="nav-item" onclick="switchTab(this, 'analytics')">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span>Regional Soil Stats</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main>
+            <!-- 1. UNIFIED ADVISOR TAB -->
+            <section id="advisor" class="tab-content active">
+                <div class="glass-card">
+                    <div class="loader-overlay" id="advisor-loader">
+                        <div class="spinner"></div>
+                        <div class="loading-text" id="advisor-loader-text">Analyzing parameters & consulting models...</div>
+                    </div>
+
+                    <div class="card-header-flex">
+                        <h2 class="card-title"><i class="fa-solid fa-network-wired"></i> Unified Agricultural Advisor</h2>
+                        <span class="preset-label">Presets:</span>
+                    </div>
+                    
+                    <p class="card-description">Enter environmental metrics to run 4 specialized models (Crop recommendation, Soil Health estimation, Yield prediction, and Irrigation scheduling) coupled with RAG-guided LLM advice.</p>
+                    
+                    <div class="presets-row">
+                        <button class="preset-chip" onclick="applyPreset('advisor', 80, 40, 40, 28, 70, 6.5, 200, 'Rice')">🌾 Rice (Kharif)</button>
+                        <button class="preset-chip" onclick="applyPreset('advisor', 60, 30, 35, 18, 55, 7.0, 80, 'Wheat')">🥖 Wheat (Rabi)</button>
+                        <button class="preset-chip" onclick="applyPreset('advisor', 40, 20, 20, 32, 60, 6.8, 120, 'Maize')">🌽 Maize</button>
+                        <button class="preset-chip" onclick="applyPreset('advisor', 20, 25, 20, 25, 45, 6.0, 50, 'Chickpea')">🧆 Chickpea (Dry)</button>
+                        <button class="preset-chip" onclick="applyPreset('advisor', 10, 5, 10, 35, 15, 5.0, 30, 'Acidic Soil')">⚠️ Poor Acidic Soil</button>
+                    </div>
+
+                    <form id="advisor-form" onsubmit="getUnifiedAdvisory(event)">
+                        <div class="grid-inputs">
+                            <!-- N -->
+                            <div class="form-group">
+                                <div class="label-flex">
+                                    <span>Nitrogen (N)</span>
+                                    <span class="input-value" id="val-adv-N">50 kg/ha</span>
+                                </div>
+                                <input type="range" class="range-slider" id="adv-N" min="0" max="140" value="50" oninput="updateValLabel('adv-N', 'kg/ha')">
+                            </div>
+                            <!-- P -->
+                            <div class="form-group">
+                                <div class="label-flex">
+                                    <span>Phosphorus (P)</span>
+                                    <span class="input-value" id="val-adv-P">35 kg/ha</span>
+                                </div>
+                                <input type="range" class="range-slider" id="adv-P" min="0" max="145" value="35" oninput="updateValLabel('adv-P', 'kg/ha')">
+                            </div>
+                            <!-- K -->
+                            <div class="form-group">
+                                <div class="label-flex">
+                                    <span>Potassium (K)</span>
+                                    <span class="input-value" id="val-adv-K">40 kg/ha</span>
+                                </div>
+                                <input type="range" class="range-slider" id="adv-K" min="0" max="205" value="40" oninput="updateValLabel('adv-K', 'kg/ha')">
+                            </div>
+                            <!-- Temp -->
+                            <div class="form-group">
+                                <div class="label-flex">
+                                    <span>Temperature</span>
+                                    <span class="input-value" id="val-adv-temp">27 °C</span>
+                                </div>
+                                <input type="range" class="range-slider" id="adv-temp" min="8" max="44" value="27" oninput="updateValLabel('adv-temp', '°C')">
+                            </div>
+                            <!-- Humidity -->
+                            <div class="form-group">
+                                <div class="label-flex">
+                                    <span>Humidity</span>
+                                    <span class="input-value" id="val-adv-humidity">65 %</span>
+                                </div>
+                                <input type="range" class="range-slider" id="adv-humidity" min="14" max="100" value="65" oninput="updateValLabel('adv-humidity', '%')">
+                            </div>
+                            <!-- pH -->
+                            <div class="form-group">
+                                <div class="label-flex">
+                                    <span>Soil pH</span>
+                                    <span class="input-value" id="val-adv-ph">6.5</span>
+                                </div>
+                                <input type="range" class="range-slider" id="adv-ph" min="3.5" max="10.0" step="0.1" value="6.5" oninput="updateValLabel('adv-ph', '')">
+                            </div>
+                            <!-- Rainfall -->
+                            <div class="form-group">
+                                <div class="label-flex">
+                                    <span>Rainfall</span>
+                                    <span class="input-value" id="val-adv-rainfall">120 mm</span>
+                                </div>
+                                <input type="range" class="range-slider" id="adv-rainfall" min="20" max="300" value="120" oninput="updateValLabel('adv-rainfall', 'mm')">
+                            </div>
+                            <!-- Crop Override -->
+                            <div class="form-group">
+                                <div class="label-flex">
+                                    <span>Crop Recommendation Override</span>
+                                    <span>Optional</span>
+                                </div>
+                                <select class="select-input" id="adv-crop-override">
+                                    <option value="">Auto-Detect Crop (ML Model)</option>
+                                    <option value="rice">Rice</option>
+                                    <option value="maize">Maize</option>
+                                    <option value="chickpea">Chickpea</option>
+                                    <option value="kidneybeans">Kidney Beans</option>
+                                    <option value="pigeonpeas">Pigeon Peas</option>
+                                    <option value="banana">Banana</option>
+                                    <option value="mango">Mango</option>
+                                    <option value="grapes">Grapes</option>
+                                    <option value="watermelon">Watermelon</option>
+                                    <option value="apple">Apple</option>
+                                    <option value="orange">Orange</option>
+                                    <option value="papaya">Papaya</option>
+                                    <option value="coconut">Coconut</option>
+                                    <option value="cotton">Cotton</option>
+                                    <option value="jute">Jute</option>
+                                    <option value="coffee">Coffee</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn"><i class="fa-solid fa-wand-magic-sparkles"></i> Generate Advisory Plan</button>
+                    </form>
+
+                    <!-- Results Output -->
+                    <div id="advisor-results" class="results-container" style="display: none;">
+                        <h3 style="font-size: 1.25rem; color: var(--primary-light);">Analysis Results</h3>
+                        
+                        <div class="metrics-summary-grid">
+                            <!-- Crop Recommendation Card -->
+                            <div class="mini-result-card">
+                                <span class="mini-result-title"><i class="fa-solid fa-wheat-awn"></i> Target Crop</span>
+                                <span class="mini-result-value" id="res-adv-crop" style="text-transform: capitalize; color: #fbbf24;">Wheat</span>
+                                <span class="mini-result-footer">Determined by Recommender model</span>
+                            </div>
+
+                            <!-- Soil Health Score Card -->
+                            <div class="mini-result-card">
+                                <span class="mini-result-title"><i class="fa-solid fa-heart-pulse"></i> Soil Health</span>
+                                <div class="soil-score-flex">
+                                    <div class="circle-progress-wrapper">
+                                        <svg class="circle-progress">
+                                            <circle class="circle-progress-bg" cx="35" cy="35" r="30"></circle>
+                                            <circle class="circle-progress-bar" id="res-adv-soil-circle" cx="35" cy="35" r="30"></circle>
+                                        </svg>
+                                        <div class="circle-text" id="res-adv-soil-score">82</div>
+                                    </div>
+                                    <div>
+                                        <div style="font-weight: 700; font-size: 1.1rem;" id="res-adv-soil-grade">Good</div>
+                                        <div class="mini-result-footer" id="res-adv-soil-ph">Optimal pH</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Crop Yield Predictor Card -->
+                            <div class="mini-result-card">
+                                <span class="mini-result-title"><i class="fa-solid fa-chart-simple"></i> Yield Prediction</span>
+                                <span class="mini-result-value" id="res-adv-yield">4.2 tonnes/ha</span>
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar-fill" id="res-adv-yield-bar" style="width: 75%;"></div>
+                                </div>
+                                <span class="mini-result-footer" id="res-adv-yield-gap">Gap: 12% vs Potential</span>
+                            </div>
+
+                            <!-- Irrigation Scheduler Card -->
+                            <div class="mini-result-card">
+                                <span class="mini-result-title"><i class="fa-solid fa-droplet"></i> Irrigation Schedule</span>
+                                <span class="mini-result-value" id="res-adv-water" style="color: #60a5fa;">3 sessions</span>
+                                <span class="mini-result-footer" id="res-adv-water-deficit">Deficit: 150 mm</span>
+                            </div>
+                        </div>
+
+                        <!-- Soil Issues Banner -->
+                        <div id="res-adv-issues-banner" class="info-alert" style="display: none; background: rgba(239, 68, 68, 0.05); border-color: rgba(239, 68, 68, 0.15); color: #fca5a5;">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <div>
+                                <strong>Soil Issues Detected:</strong> <span id="res-adv-issues">Nitrogen Deficiency, High Acidity</span>
+                            </div>
+                        </div>
+
+                        <!-- AI Recommendations -->
+                        <div class="ai-report-box">
+                            <div class="ai-report-header">
+                                <i class="fa-solid fa-robot"></i>
+                                <span>Gemini AI Grounded Advisory Report</span>
+                            </div>
+                            <div class="ai-report-body" id="res-adv-report">
+                                Synthesis of advice will load here...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. FERTILIZER PLANNER TAB -->
+            <section id="planner" class="tab-content">
+                <div class="glass-card">
+                    <div class="loader-overlay" id="planner-loader">
+                        <div class="spinner"></div>
+                        <div class="loading-text">Predicting Fertilizer requirements...</div>
+                    </div>
+
+                    <div class="card-header-flex">
+                        <h2 class="card-title"><i class="fa-solid fa-flask"></i> Fertilizer Planner</h2>
+                    </div>
+                    <p class="card-description">Calculate the optimal fertilizer type and detailed dosing application schedule based on crop type, soil moisture, and current NPK values.</p>
+
+                    <form id="planner-form" onsubmit="getFertilizerPlan(event)">
+                        <div class="grid-inputs">
+                            <!-- Crop Type -->
+                            <div class="form-group">
+                                <label class="label-flex">Crop Type</label>
+                                <select class="select-input" id="plan-crop">
+                                    <option value="Maize">Maize</option>
+                                    <option value="Sugarcane">Sugarcane</option>
+                                    <option value="Cotton">Cotton</option>
+                                    <option value="Tobacco">Tobacco</option>
+                                    <option value="Paddy">Paddy</option>
+                                    <option value="Barley">Barley</option>
+                                    <option value="Wheat">Wheat</option>
+                                    <option value="Millets">Millets</option>
+                                    <option value="Oil seeds">Oil seeds</option>
+                                    <option value="Pulses">Pulses</option>
+                                    <option value="Ground Nuts">Ground Nuts</option>
+                                </select>
+                            </div>
+                            <!-- Soil Type -->
+                            <div class="form-group">
+                                <label class="label-flex">Soil Type</label>
+                                <select class="select-input" id="plan-soil">
+                                    <option value="Sandy">Sandy</option>
+                                    <option value="Loamy">Loamy</option>
+                                    <option value="Black">Black</option>
+                                    <option value="Red">Red</option>
+                                    <option value="Clayey">Clayey</option>
+                                </select>
+                            </div>
+                            <!-- Moisture -->
+                            <div class="form-group">
+                                <div class="label-flex">
+                                    <span>Soil Moisture</span>
+                                    <span class="input-value" id="val-plan-moisture">38 %</span>
+                                </div>
+                                <input type="range" class="range-slider" id="plan-moisture" min="0" max="100" value="38" oninput="updateValLabel('plan-moisture', '%')">
+                            </div>
+                            <!-- Temp -->
+                            <div class="form-group">
+                                <div class="label-flex">
+                                    <span>Temperature</span>
+                                    <span class="input-value" id="val-plan-temp">26 °C</span>
+                                </div>
+                                <input type="range" class="range-slider" id="plan-temp" min="0" max="60" value="26" oninput="updateValLabel('plan-temp', '°C')">
+                            </div>
+                            <!-- Humidity -->
+                            <div class="form-group">
+                                <div class="label-flex">
+                                    <span>Humidity</span>
+                                    <span class="input-value" id="val-plan-humidity">52 %</span>
+                                </div>
+                                <input type="range" class="range-slider" id="plan-humidity" min="0" max="100" value="52" oninput="updateValLabel('plan-humidity', '%')">
+                            </div>
+                            <!-- N -->
+                            <div class="form-group">
+                                <div class="label-flex">
+                                    <span>Nitrogen (N)</span>
+                                    <span class="input-value" id="val-plan-N">37</span>
+                                </div>
+                                <input type="range" class="range-slider" id="plan-N" min="0" max="100" value="37" oninput="updateValLabel('plan-N', '')">
+                            </div>
+                            <!-- P -->
+                            <div class="form-group">
+                                <div class="label-flex">
+                                    <span>Phosphorus (P)</span>
+                                    <span class="input-value" id="val-plan-P">0</span>
+                                </div>
+                                <input type="range" class="range-slider" id="plan-P" min="0" max="100" value="0" oninput="updateValLabel('plan-P', '')">
+                            </div>
+                            <!-- K -->
+                            <div class="form-group">
+                                <div class="label-flex">
+                                    <span>Potassium (K)</span>
+                                    <span class="input-value" id="val-plan-K">0</span>
+                                </div>
+                                <input type="range" class="range-slider" id="plan-K" min="0" max="100" value="0" oninput="updateValLabel('plan-K', '')">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn"><i class="fa-solid fa-chart-pie"></i> Calculate Fertilizer Plan</button>
+                    </form>
+
+                    <!-- Results Output -->
+                    <div id="planner-results" class="results-container" style="display: none;">
+                        <h3 style="font-size: 1.25rem; color: var(--primary-light);">Fertilizer Recommendation</h3>
+                        
+                        <div class="metrics-summary-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+                            <div class="mini-result-card" style="align-items: center; justify-content: center; gap: 1rem; border-color: rgba(16, 185, 129, 0.2);">
+                                <span class="mini-result-title"><i class="fa-solid fa-circle-check"></i> Recommended Fertilizer</span>
+                                <span class="mini-result-value" id="res-plan-fertilizer" style="font-size: 2.2rem; color: var(--primary-light);">Urea</span>
+                                <span class="mini-result-footer" id="res-plan-confidence" style="font-size: 1rem;">Confidence: 98.4%</span>
+                            </div>
+
+                            <div class="mini-result-card">
+                                <span class="mini-result-title"><i class="fa-solid fa-list-check"></i> Dosage & Application Advice</span>
+                                <span id="res-plan-dosage" style="font-size: 0.95rem; line-height: 1.5; color: var(--text-main); margin-top: 0.5rem;">Apply at planting time. Do not apply near root crown.</span>
+                            </div>
+                        </div>
+
+                        <div class="ai-report-box" style="background: rgba(59, 130, 246, 0.02); border-color: rgba(59, 130, 246, 0.1);">
+                            <div class="ai-report-header" style="color: #60a5fa; border-color: rgba(59, 130, 246, 0.1);">
+                                <i class="fa-solid fa-calendar-days"></i>
+                                <span>Detailed Application Schedule</span>
+                            </div>
+                            <div class="ai-report-body" id="res-plan-schedule">
+                                Schedule will load here...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. LEAF DIAGNOSIS TAB -->
+            <section id="diagnose" class="tab-content">
+                <div class="glass-card">
+                    <div class="loader-overlay" id="diagnose-loader">
+                        <div class="spinner"></div>
+                        <div class="loading-text">Analyzing leaf image using Gemini Vision Pathologist...</div>
+                    </div>
+
+                    <div class="card-header-flex">
+                        <h2 class="card-title"><i class="fa-solid fa-leaf"></i> Leaf Disease Diagnosis</h2>
+                    </div>
+                    <p class="card-description">Upload a photo of a crop leaf showing spots, discoloration, or other damage to receive an immediate diagnosis, treatment plan, and preventive guidelines.</p>
+
+                    <div class="info-alert">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <div>
+                            <strong>multimodal grounding:</strong> The system integrates Gemini 2.5 Flash Vision to run leaf visual analysis, combined with ICAR disease management publications context.
+                        </div>
+                    </div>
+
+                    <div class="upload-area" id="drop-zone" onclick="document.getElementById('file-input').click()">
+                        <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+                        <h3 style="font-size: 1.1rem; color: var(--text-main);">Drag & Drop Leaf Image</h3>
+                        <p style="color: var(--text-muted); font-size: 0.85rem;">or click to browse local files (PNG, JPG, WEBP up to 10MB)</p>
+                        <input type="file" id="file-input" accept="image/*" onchange="handleFileSelect(event)">
+                    </div>
+
+                    <div class="preview-container" id="preview-box">
+                        <img id="preview-img" class="image-preview" src="#" alt="Leaf Preview">
+                        <button class="remove-preview" onclick="clearPreview(event)"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+
+                    <button class="btn" id="diagnose-btn" onclick="submitLeafDiagnosis()" style="display: none;"><i class="fa-solid fa-magnifying-glass-chart"></i> Run Pathological Analysis</button>
+
+                    <!-- Results Output -->
+                    <div id="diagnose-results" class="results-container" style="display: none;">
+                        <div class="ai-report-box" style="margin-top: 0;">
+                            <div class="ai-report-header">
+                                <i class="fa-solid fa-stethoscope"></i>
+                                <span>Crop Pathologist Diagnostic Report</span>
+                            </div>
+                            <div class="ai-report-body" id="res-diag-report">
+                                Diagnosis details will show here...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. VOICE ASSISTANT TAB -->
+            <section id="voice" class="tab-content">
+                <div class="glass-card">
+                    <div class="loader-overlay" id="voice-loader">
+                        <div class="spinner"></div>
+                        <div class="loading-text" id="voice-loader-text">Processing voice...</div>
+                    </div>
+
+                    <div class="card-header-flex">
+                        <h2 class="card-title"><i class="fa-solid fa-microphone"></i> Multilingual Voice Assistant</h2>
+                    </div>
+                    <p class="card-description">Ask farming questions in your regional language. System transcribes your audio, retrieves matching ICAR handbook context, and speaks the solution back to you.</p>
+
+                    <div class="grid-inputs" style="grid-template-columns: 1fr 1fr; margin-bottom: 1.5rem;">
+                        <div class="form-group">
+                            <label class="label-flex">Preferred Language</label>
+                            <select class="select-input" id="voice-lang">
+                                <option value="hi-IN">Hindi (हिन्दी)</option>
+                                <option value="bn-IN">Bengali (বাংলা)</option>
+                                <option value="ta-IN">Tamil (தமிழ்)</option>
+                                <option value="te-IN">Telugu (తెలుగు)</option>
+                                <option value="mr-IN">Marathi (मराठी)</option>
+                                <option value="gu-IN">Gujarati (ગુજરાતી)</option>
+                                <option value="kn-IN">Kannada (ಕನ್ನಡ)</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="justify-content: flex-end;">
+                            <span style="font-size: 0.85rem; color: var(--text-muted); padding-bottom: 0.5rem;">Powered by Sarvam AI Speech API</span>
+                        </div>
+                    </div>
+
+                    <div class="voice-section">
+                        <div class="mic-button-wrapper">
+                            <button class="mic-button" id="mic-btn" onclick="toggleRecording()">
+                                <i class="fa-solid fa-microphone" id="mic-icon"></i>
+                            </button>
+                            <div class="pulse-ring"></div>
+                        </div>
+                        <div class="voice-status-text" id="voice-status">Tap microphone to start recording query...</div>
+
+                        <div class="audio-player-container" id="audio-player-box">
+                            <span style="font-size: 0.85rem; color: var(--primary-light); align-self: flex-start;"><i class="fa-solid fa-volume-high"></i> AI Voice Response:</span>
+                            <audio id="audio-player" class="audio-player" controls></audio>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. MANDI RATES TAB -->
+            <section id="mandi" class="tab-content">
+                <div class="glass-card">
+                    <div class="loader-overlay" id="mandi-loader">
+                        <div class="spinner"></div>
+                        <div class="loading-text">Fetching live Mandi wholesale prices...</div>
+                    </div>
+
+                    <div class="card-header-flex">
+                        <h2 class="card-title"><i class="fa-solid fa-store"></i> Wholesale Mandi Market Rates</h2>
+                    </div>
+                    <p class="card-description">Retrieve current daily wholesale prices for crops and commodities across wholesale markets (mandis) in Indian states.</p>
+
+                    <form id="mandi-form" onsubmit="getMandiRates(event)">
+                        <div class="grid-inputs" style="grid-template-columns: 1fr 1fr;">
+                            <div class="form-group">
+                                <label class="label-flex">Commodity / Crop</label>
+                                <select class="select-input" id="mandi-commodity">
+                                    <option value="Wheat">Wheat (गेंहू)</option>
+                                    <option value="Rice">Rice (धान/चावल)</option>
+                                    <option value="Cotton">Cotton (कपास)</option>
+                                    <option value="Maize">Maize (मक्का)</option>
+                                    <option value="Gram">Chana / Gram (चना)</option>
+                                    <option value="Potato">Potato (आलू)</option>
+                                    <option value="Onion">Onion (प्याज)</option>
+                                    <option value="Tomato">Tomato (टमाटर)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="label-flex">State (Optional)</label>
+                                <select class="select-input" id="mandi-state">
+                                    <option value="">All States</option>
+                                    <option value="Maharashtra">Maharashtra</option>
+                                    <option value="Punjab">Punjab</option>
+                                    <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                    <option value="Madhya Pradesh">Madhya Pradesh</option>
+                                    <option value="Rajasthan">Rajasthan</option>
+                                    <option value="Gujarat">Gujarat</option>
+                                    <option value="Haryana">Haryana</option>
+                                    <option value="Karnataka">Karnataka</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn"><i class="fa-solid fa-magnifying-glass-dollar"></i> Fetch Market Price Feed</button>
+                    </form>
+
+                    <!-- Results Output -->
+                    <div id="mandi-results" class="results-container" style="display: none;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <h3 style="font-size: 1.25rem; color: var(--primary-light);">Market Rates</h3>
+                            <span id="mandi-source-badge" style="font-size: 0.8rem; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); color: #60a5fa; padding: 0.2rem 0.6rem; border-radius: 20px;">CEDA Live Feed</span>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>State</th>
+                                        <th>Mandi / Market</th>
+                                        <th>Variety</th>
+                                        <th>Min Price (₹/Quintal)</th>
+                                        <th>Max Price (₹/Quintal)</th>
+                                        <th>Modal Price (₹/Quintal)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="mandi-table-body">
+                                    <!-- Mandi rates inserted here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6. ANALYTICS TAB -->
+            <section id="analytics" class="tab-content">
+                <div class="glass-card">
+                    <div class="loader-overlay" id="analytics-loader">
+                        <div class="spinner"></div>
+                        <div class="loading-text">Loading regional dataset analytics...</div>
+                    </div>
+
+                    <div class="card-header-flex">
+                        <h2 class="card-title"><i class="fa-solid fa-chart-line"></i> Regional Soil Analytics</h2>
+                    </div>
+                    <p class="card-description">View governmental soil survey metrics and crop suitability analytics for Indian agricultural regions.</p>
+
+                    <div class="form-group" style="max-width: 400px; margin-bottom: 2rem;">
+                        <label class="label-flex">Select Agricultural Region / State</label>
+                        <select class="select-input" id="analytics-state" onchange="getRegionalStats()">
+                            <option value="">Select State...</option>
+                            <option value="Andhra Pradesh">Andhra Pradesh</option>
+                            <option value="Assam">Assam</option>
+                            <option value="Bihar">Bihar</option>
+                            <option value="Chhattisgarh">Chhattisgarh</option>
+                            <option value="Gujarat">Gujarat</option>
+                            <option value="Haryana">Haryana</option>
+                            <option value="Himachal Pradesh">Himachal Pradesh</option>
+                            <option value="Karnataka">Karnataka</option>
+                            <option value="Kerala">Kerala</option>
+                            <option value="Madhya Pradesh">Madhya Pradesh</option>
+                            <option value="Maharashtra">Maharashtra</option>
+                            <option value="Odisha">Odisha</option>
+                            <option value="Punjab">Punjab</option>
+                            <option value="Rajasthan">Rajasthan</option>
+                            <option value="Tamil Nadu">Tamil Nadu</option>
+                            <option value="Telangana">Telangana</option>
+                            <option value="Uttar Pradesh">Uttar Pradesh</option>
+                            <option value="West Bengal">West Bengal</option>
+                        </select>
+                    </div>
+
+                    <!-- Results Output -->
+                    <div id="analytics-results" class="results-container" style="display: none;">
+                        <h3 style="font-size: 1.25rem; color: var(--primary-light);" id="analytics-title">Soil Nutrient Report</h3>
+                        
+                        <div class="metrics-summary-grid">
+                            <div class="mini-result-card">
+                                <span class="mini-result-title"><i class="fa-solid fa-cubes"></i> Nitrogen (N) State Mean</span>
+                                <span class="mini-result-value" id="res-an-N">55.2</span>
+                                <span class="mini-result-footer">Deficiency risk: Moderate</span>
+                            </div>
+                            <div class="mini-result-card">
+                                <span class="mini-result-title"><i class="fa-solid fa-circle"></i> Phosphorus (P) State Mean</span>
+                                <span class="mini-result-value" id="res-an-P">32.4</span>
+                                <span class="mini-result-footer">Deficiency risk: Low</span>
+                            </div>
+                            <div class="mini-result-card">
+                                <span class="mini-result-title"><i class="fa-solid fa-bahai"></i> Potassium (K) State Mean</span>
+                                <span class="mini-result-value" id="res-an-K">180.1</span>
+                                <span class="mini-result-footer">Deficiency risk: Very Low</span>
+                            </div>
+                            <div class="mini-result-card">
+                                <span class="mini-result-title"><i class="fa-solid fa-gauge"></i> Soil pH Mean</span>
+                                <span class="mini-result-value" id="res-an-ph">7.2</span>
+                                <span class="mini-result-footer" id="res-an-suitability">Ideal for Wheat, Gram, Jowar</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 KrishiMitra Platform. Powered by offline Machine Learning Models & Gemini Multimodal RAG.</p>
+    </footer>
+
+    <script>
+        const backendBase = ''; // relative paths to FastAPI app running on same origin
+
+        // Tabs switcher
+        function switchTab(element, tabId) {
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            element.classList.add('active');
+            
+            showTab(tabId);
+        }
+
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // Update range value labels
+        function updateValLabel(inputId, unit) {
+            const input = document.getElementById(inputId);
+            const label = document.getElementById(`val-${inputId}`);
+            label.innerText = `${input.value} ${unit}`;
+        }
+
+        // Apply Preset Helper
+        function applyPreset(formPrefix, N, P, K, temp, humidity, ph, rainfall, crop) {
+            document.getElementById(`${formPrefix}-N`).value = N;
+            document.getElementById(`${formPrefix}-P`).value = P;
+            document.getElementById(`${formPrefix}-K`).value = K;
+            document.getElementById(`${formPrefix}-temp`).value = temp;
+            document.getElementById(`${formPrefix}-humidity`).value = humidity;
+            document.getElementById(`${formPrefix}-ph`).value = ph;
+            document.getElementById(`${formPrefix}-rainfall`).value = rainfall;
+            
+            updateValLabel(`${formPrefix}-N`, 'kg/ha');
+            updateValLabel(`${formPrefix}-P`, 'kg/ha');
+            updateValLabel(`${formPrefix}-K`, 'kg/ha');
+            updateValLabel(`${formPrefix}-temp`, '°C');
+            updateValLabel(`${formPrefix}-humidity`, '%');
+            updateValLabel(`${formPrefix}-ph`, '');
+            updateValLabel(`${formPrefix}-rainfall`, 'mm');
+
+            if(crop) {
+                const selectElement = document.getElementById('adv-crop-override');
+                if(selectElement) {
+                    const lowercaseCrop = crop.toLowerCase();
+                    // Select matching option if exists
+                    let found = false;
+                    for (let i = 0; i < selectElement.options.length; i++) {
+                        if (selectElement.options[i].value === lowercaseCrop) {
+                            selectElement.selectedIndex = i;
+                            found = true;
+                            break;
+                        }
+                    }
+                    if(!found) selectElement.selectedIndex = 0;
+                }
+            }
+        }
+
+        // Call Unified Advisor endpoint
+        async function getUnifiedAdvisory(event) {
+            event.preventDefault();
+            const loader = document.getElementById('advisor-loader');
+            const results = document.getElementById('advisor-results');
+            
+            loader.style.display = 'flex';
+            results.style.display = 'none';
+
+            const payload = {
+                N: parseFloat(document.getElementById('adv-N').value),
+                P: parseFloat(document.getElementById('adv-P').value),
+                K: parseFloat(document.getElementById('adv-K').value),
+                temperature: parseFloat(document.getElementById('adv-temp').value),
+                humidity: parseFloat(document.getElementById('adv-humidity').value),
+                ph: parseFloat(document.getElementById('adv-ph').value),
+                rainfall: parseFloat(document.getElementById('adv-rainfall').value),
+            };
+
+            const cropOverride = document.getElementById('adv-crop-override').value;
+            if (cropOverride) {
+                payload.crop_override = cropOverride;
+            }
+
+            try {
+                const response = await fetch(`${backendBase}/advisor/unified`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                if (!response.ok) throw new Error(await response.text());
+                
+                const data = await response.json();
+                
+                // Bind outputs
+                document.getElementById('res-adv-crop').innerText = data.crop;
+                
+                // Soil Score Ring
+                const score = Math.round(data.soil_health.score);
+                document.getElementById('res-adv-soil-score').innerText = score;
+                document.getElementById('res-adv-soil-grade').innerText = data.soil_health.grade;
+                document.getElementById('res-adv-soil-ph').innerText = `Soil ph is ${data.soil_health.ph_status}`;
+                
+                // Circle dashoffset: 220 is full, 0 is none.
+                const offset = 220 - (220 * score) / 100;
+                document.getElementById('res-adv-soil-circle').style.strokeDashoffset = offset;
+                
+                // Color adjust based on score
+                let strokeColor = '#10b981'; // Green
+                if(score < 55) strokeColor = '#ef4444'; // Red
+                else if(score < 70) strokeColor = '#f59e0b'; // Orange
+                document.getElementById('res-adv-soil-circle').style.stroke = strokeColor;
+
+                // Yield Bar
+                document.getElementById('res-adv-yield').innerText = `${data.yield_prediction.estimated_yield_ton_per_ha} T/ha`;
+                const potential = data.yield_prediction.potential_yield_ton_per_ha;
+                const estimated = data.yield_prediction.estimated_yield_ton_per_ha;
+                const yieldPercent = Math.min(100, Math.round((estimated / potential) * 100));
+                document.getElementById('res-adv-yield-bar').style.width = `${yieldPercent}%`;
+                document.getElementById('res-adv-yield-gap').innerText = `Gap: ${data.yield_prediction.gap_percent}% (Potential: ${potential} T/ha)`;
+                
+                // Water schedule
+                document.getElementById('res-adv-water').innerText = `${data.irrigation.irrigations_per_season} sessions`;
+                document.getElementById('res-adv-water-deficit').innerText = `Water Deficit: ${data.irrigation.irrigation_deficit_mm} mm`;
+
+                // Soil Issues
+                const banner = document.getElementById('res-adv-issues-banner');
+                if (data.soil_health.issues && data.soil_health.issues.length > 0) {
+                    banner.style.display = 'flex';
+                    document.getElementById('res-adv-issues').innerText = data.soil_health.issues.join(', ');
+                } else {
+                    banner.style.display = 'none';
+                }
+
+                // AI Expert Advice (Markdown converter fallback)
+                let recHtml = data.advisor_recommendation;
+                // Simple markdown parse
+                recHtml = recHtml
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                    .replace(/### (.*?)\n/g, '<h3>$1</h3>')
+                    .replace(/## (.*?)\n/g, '<h2>$1</h2>')
+                    .replace(/- (.*?)\n/g, '<li>$1</li>')
+                    .replace(/\n\n/g, '<p></p>');
+
+                document.getElementById('res-adv-report').innerHTML = recHtml;
+                
+                results.style.display = 'grid';
+            } catch (err) {
+                alert(`Error generating advisory: ${err.message}`);
+            } finally {
+                loader.style.display = 'none';
+            }
+        }
+
+        // Call Fertilizer Planner endpoint
+        async function getFertilizerPlan(event) {
+            event.preventDefault();
+            const loader = document.getElementById('planner-loader');
+            const results = document.getElementById('planner-results');
+            
+            loader.style.display = 'flex';
+            results.style.display = 'none';
+
+            const payload = {
+                crop_type: document.getElementById('plan-crop').value,
+                soil_type: document.getElementById('plan-soil').value,
+                moisture: parseFloat(document.getElementById('plan-moisture').value),
+                temperature: parseFloat(document.getElementById('plan-temp').value),
+                humidity: parseFloat(document.getElementById('plan-humidity').value),
+                nitrogen: parseFloat(document.getElementById('plan-N').value),
+                phosphorous: parseFloat(document.getElementById('plan-P').value),
+                potassium: parseFloat(document.getElementById('plan-K').value),
+            };
+
+            try {
+                const response = await fetch(`${backendBase}/planner/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                if (!response.ok) throw new Error(await response.text());
+                
+                const data = await response.json();
+                
+                document.getElementById('res-plan-fertilizer').innerText = data.recommended_fertilizer;
+                document.getElementById('res-plan-confidence').innerText = `Model Confidence: ${(data.confidence * 100).toFixed(1)}%`;
+                document.getElementById('res-plan-dosage').innerText = data.dosage_advice;
+                
+                let scheduleHtml = '<ul>';
+                data.application_schedule.forEach(step => {
+                    scheduleHtml += `<li>${step}</li>`;
+                });
+                scheduleHtml += '</ul>';
+                document.getElementById('res-plan-schedule').innerHTML = scheduleHtml;
+                
+                results.style.display = 'grid';
+            } catch (err) {
+                alert(`Error calculating plan: ${err.message}`);
+            } finally {
+                loader.style.display = 'none';
+            }
+        }
+
+        // Drag & Drop Image Handling
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const previewBox = document.getElementById('preview-box');
+        const previewImg = document.getElementById('preview-img');
+        const diagnoseBtn = document.getElementById('diagnose-btn');
+        let selectedLeafFile = null;
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, e => {
+                e.preventDefault();
+                dropZone.classList.add('dragging');
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, e => {
+                e.preventDefault();
+                dropZone.classList.remove('dragging');
+            }, false);
+        });
+
+        dropZone.addEventListener('drop', e => {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            if (files.length) handleLeafFile(files[0]);
+        });
+
+        function handleFileSelect(e) {
+            const files = e.target.files;
+            if (files.length) handleLeafFile(files[0]);
+        }
+
+        function handleLeafFile(file) {
+            if (!file.type.startsWith('image/')) {
+                alert('Please upload an image file.');
+                return;
+            }
+            selectedLeafFile = file;
+            const reader = new FileReader();
+            reader.onload = e => {
+                previewImg.src = e.target.result;
+                previewBox.style.display = 'block';
+                diagnoseBtn.style.display = 'flex';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function clearPreview(e) {
+            if(e) e.stopPropagation();
+            selectedLeafFile = null;
+            previewImg.src = '#';
+            previewBox.style.display = 'none';
+            diagnoseBtn.style.display = 'none';
+            document.getElementById('diagnose-results').style.display = 'none';
+            fileInput.value = '';
+        }
+
+        // Submit Leaf Diagnosis to Gemini Vision Pathologist
+        async function submitLeafDiagnosis() {
+            if (!selectedLeafFile) return;
+            const loader = document.getElementById('diagnose-loader');
+            const results = document.getElementById('diagnose-results');
+            
+            loader.style.display = 'flex';
+            results.style.display = 'none';
+
+            const formData = new FormData();
+            formData.append('image', selectedLeafFile);
+
+            try {
+                const response = await fetch(`${backendBase}/diagnose/`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!response.ok) throw new Error(await response.text());
+                
+                const data = await response.json();
+                
+                let diagHtml = data.diagnosis;
+                // Simple markdown parse
+                diagHtml = diagHtml
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                    .replace(/### (.*?)\n/g, '<h3>$1</h3>')
+                    .replace(/## (.*?)\n/g, '<h2>$1</h2>')
+                    .replace(/- (.*?)\n/g, '<li>$1</li>')
+                    .replace(/\n\n/g, '<p></p>');
+                    
+                document.getElementById('res-diag-report').innerHTML = diagHtml;
+                results.style.display = 'grid';
+            } catch (err) {
+                alert(`Diagnosis failed: ${err.message}`);
+            } finally {
+                loader.style.display = 'none';
+            }
+        }
+
+        // Voice Assistant HTML5 MediaRecorder
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let isRecording = false;
+
+        async function toggleRecording() {
+            const micBtn = document.getElementById('mic-btn');
+            const micIcon = document.getElementById('mic-icon');
+            const statusText = document.getElementById('voice-status');
+
+            if (!isRecording) {
+                // Start Recording
+                audioChunks = [];
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    
+                    mediaRecorder.addEventListener('dataavailable', event => {
+                        audioChunks.push(event.data);
+                    });
+
+                    mediaRecorder.addEventListener('stop', () => {
+                        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                        sendVoiceQuery(audioBlob);
+                    });
+
+                    mediaRecorder.start();
+                    isRecording = true;
+                    micBtn.classList.add('recording');
+                    micIcon.className = 'fa-solid fa-stop';
+                    statusText.innerText = "Listening... Tap to stop recording.";
+                } catch (err) {
+                    alert(`Could not access microphone: ${err.message}. Providing file fallback.`);
+                    // Fallback: trigger file selection for audio file
+                    triggerAudioFileFallback();
+                }
+            } else {
+                // Stop Recording
+                mediaRecorder.stop();
+                // Stop all tracks to release microphone
+                mediaRecorder.stream.getTracks().forEach(track => track.stop());
+                
+                isRecording = false;
+                micBtn.classList.remove('recording');
+                micIcon.className = 'fa-solid fa-microphone';
+                statusText.innerText = "Transcribing and querying agricultural expert RAG...";
+            }
+        }
+
+        function triggerAudioFileFallback() {
+            const fileSelect = document.createElement('input');
+            fileSelect.type = 'file';
+            fileSelect.accept = 'audio/*';
+            fileSelect.onchange = e => {
+                const files = e.target.files;
+                if (files.length) {
+                    document.getElementById('voice-status').innerText = "Uploading audio file and querying...";
+                    sendVoiceQuery(files[0]);
+                }
+            };
+            fileSelect.click();
+        }
+
+        async function sendVoiceQuery(audioBlob) {
+            const loader = document.getElementById('voice-loader');
+            const audioPlayerBox = document.getElementById('audio-player-box');
+            
+            loader.style.display = 'flex';
+            audioPlayerBox.style.display = 'none';
+
+            const language = document.getElementById('voice-lang').value;
+            const formData = new FormData();
+            formData.append('audio', audioBlob, 'query.wav');
+            formData.append('language', language);
+
+            try {
+                const response = await fetch(`${backendBase}/chat/voice/`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!response.ok) throw new Error(await response.text());
+                
+                const responseBlob = await response.blob();
+                const audioUrl = URL.createObjectURL(responseBlob);
+                const audioPlayer = document.getElementById('audio-player');
+                
+                audioPlayer.src = audioUrl;
+                audioPlayerBox.style.display = 'flex';
+                document.getElementById('voice-status').innerText = "Advisory answer synthesized! Playing response audio.";
+                
+                audioPlayer.play();
+            } catch (err) {
+                document.getElementById('voice-status').innerText = "Tap mic to record query.";
+                alert(`Voice assistant error: ${err.message}`);
+            } finally {
+                loader.style.display = 'none';
+            }
+        }
+
+        // Mandi Market Rates
+        async function getMandiRates(event) {
+            event.preventDefault();
+            const loader = document.getElementById('mandi-loader');
+            const results = document.getElementById('mandi-results');
+            
+            loader.style.display = 'flex';
+            results.style.display = 'none';
+
+            const commodity = document.getElementById('mandi-commodity').value;
+            const state = document.getElementById('mandi-state').value;
+            
+            let url = `${backendBase}/mandi/?commodity=${commodity}`;
+            if(state) url += `&state=${state}`;
+
+            try {
+                const response = await fetch(url);
+                if(!response.ok) throw new Error(await response.text());
+                
+                const resData = await response.json();
+                
+                document.getElementById('mandi-source-badge').innerText = resData.source;
+                const tbody = document.getElementById('mandi-table-body');
+                tbody.innerHTML = '';
+
+                if(!resData.data || resData.data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--text-muted);">No current market rates available for the selected filters.</td></tr>';
+                } else {
+                    resData.data.forEach(row => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${row.state || '-'}</td>
+                            <td>${row.mandi || '-'}</td>
+                            <td>${row.variety || '-'}</td>
+                            <td>₹${row.min_price || '-'}</td>
+                            <td>₹${row.max_price || '-'}</td>
+                            <td><span class="price-badge">₹${row.modal_price || '-'}</span></td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+
+                results.style.display = 'grid';
+            } catch (err) {
+                alert(`Failed to fetch mandi rates: ${err.message}`);
+            } finally {
+                loader.style.display = 'none';
+            }
+        }
+
+        // Regional Soil stats
+        async function getRegionalStats() {
+            const state = document.getElementById('analytics-state').value;
+            if(!state) {
+                document.getElementById('analytics-results').style.display = 'none';
+                return;
+            }
+
+            const loader = document.getElementById('analytics-loader');
+            const results = document.getElementById('analytics-results');
+            
+            loader.style.display = 'flex';
+            results.style.display = 'none';
+
+            try {
+                const response = await fetch(`${backendBase}/regional-stats/${state}`);
+                if(!response.ok) throw new Error(await response.text());
+                
+                const data = await response.json();
+                
+                document.getElementById('analytics-title').innerText = `${state} Regional Soil Profile`;
+                document.getElementById('res-an-N').innerText = data.N || 'N/A';
+                document.getElementById('res-an-P').innerText = data.P || 'N/A';
+                document.getElementById('res-an-K').innerText = data.K || 'N/A';
+                
+                const ph = data.ph || 7.0;
+                document.getElementById('res-an-ph').innerText = ph;
+                
+                let suitability = "Optimal crops: ";
+                if(ph < 6.0) suitability += "Potato, Tea, Millets (tolerant to acidic conditions)";
+                else if(ph > 7.5) suitability += "Cotton, Barley, Sorghum (tolerant to alkaline conditions)";
+                else suitability += "Wheat, Rice, Chickpea, Maize, Mustard (optimal range)";
+                
+                document.getElementById('res-an-suitability').innerText = suitability;
+
+                results.style.display = 'grid';
+            } catch (err) {
+                alert(`Failed to fetch regional statistics: ${err.message}`);
+            } finally {
+                loader.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
