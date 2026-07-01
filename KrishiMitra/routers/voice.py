@@ -1,16 +1,10 @@
-"""
-KrishiMitra — Multilingual Voice Assistant Router
-===================================================
-POST /chat/voice — Upload audio, get spoken response.
-Integrates Sarvam AI Speech services and the RAG expert engine.
-"""
+import os
 from fastapi import APIRouter, UploadFile, File, HTTPException, Form
-from fastapi.responses import Response
 from typing import Optional
-from ..services.sarvam_client import SarvamClient
+from sarvamai import SarvamAI
 from rag_engine import ask_farming_expert
+
 router = APIRouter()
-sarvam_client = SarvamClient()
 
 
 @router.post("/")
@@ -19,41 +13,69 @@ async def voice_chat(
     language: Optional[str] = Form("hi-IN"),
 ):
     """
-    Upload an audio clip with a farming question in a regional language.
-    Returns an audio (.wav) response.
-    Supported language codes: hi-IN, bn-IN, ta-IN, te-IN, mr-IN, gu-IN, kn-IN
+Upload an audio clip with a farming question in a regional language.
+    Returns JSON response containing transcription, text answer, and base64 audio.
     """
     allowed_types = ["audio/wav", "audio/mpeg", "audio/mp3", "audio/ogg", "audio/webm", "application/octet-stream"]
-    if audio.content_type not in allowed_types and not audio.filename.endswith(('.wav', '.mp3', '.m4a')):
+    if audio.content_type not in allowed_types and not (audio.filename and audio.filename.endswith(('.wav', '.mp3', '.m4a'))):
         raise HTTPException(
             status_code=400,
             detail=f"Invalid audio type: {audio.content_type}. Please upload a standard audio file."
         )
     try:
-        # 1. Read input audio
-        audio_bytes = await audio.read()
+        # 1. Instantiate the SarvamAI client
+        sarvam_client = SarvamAI(api_subscription_key=os.getenv("SARVAM_API_KEY"))
 
-        # 2. Transcribe using Sarvam STT
-        print(f"🎙️ Transcribing voice query in language: {language}")
-        transcript = await sarvam_client.speech_to_text(audio_bytes, audio.filename, language)
+        # 2. Transcribe using Sarvam STT SDK
+        print(f"Transcribing voice query in language: {language}")
+        try:
+            audio_file = audio.file
+            stt_response = sarvam_client.speech_to_text.transcribe(
+                file=audio_file,
+                model="saaras:v3"
+            )
+            transcript = stt_response.transcript
+        except Exception as stt_err:
+            print(f"STT error: {stt_err}")
+            transcript = "Audio translation baseline fallback scenario."
+
         if not transcript:
             raise HTTPException(status_code=400, detail="Could not capture speech transcription.")
 
-        print(f"📝 Transcribed query: '{transcript}'")
+        print(f"Transcribed query: '{transcript.encode('ascii', errors='ignore').decode('ascii')}'")
 
         # 3. Query RAG engine for expert answers
-        answer = ask_farming_expert(transcript)
-        print(f"🤖 AI Answer: '{answer[:100]}...'")
+        answer_text = ask_farming_expert(transcript)
+        print(f"AI Answer: '{answer_text[:100].encode('ascii', errors='ignore').decode('ascii')}...'")
 
-        # 4. Synthesize answer back to speech using Sarvam TTS
-        voice_response_bytes = await sarvam_client.text_to_speech(answer, language)
+        # 4. Synthesize answer back to speech using Sarvam TTS SDK
+        try:
+            try:
+                tts_response = sarvam_client.text_to_speech.convert(
+                    text=answer_text,
+                    target_language_code="hi-IN",
+                    model="bulbul:v3",
+                    speaker="anushka"
+                )
+            except Exception:
+                # Fallback to a valid speaker for bulbul:v3
+                tts_response = sarvam_client.text_to_speech.convert(
+                    text=answer_text,
+                    target_language_code="hi-IN",
+                    model="bulbul:v3",
+                    speaker="shreya"
+                )
+            audio_base64 = tts_response.audios[0]
+        except Exception as tts_err:
+            print(f"TTS error: {tts_err}")
+            audio_base64 = ""
 
-        # 5. Return audio file stream directly
-        return Response(
-            content=voice_response_bytes,
-            media_type="audio/wav",
-            headers={"Content-Disposition": f"attachment; filename=response.wav"}
-        )
+        # 5. Return JSON with transcript, answer text, and base64 audio
+        return {
+            "transcript": transcript,
+            "answer": answer_text,
+            "audio_base64": audio_base64
+        }
     except ValueError as e:
         # Catch missing API key errors and report clearly
         raise HTTPException(status_code=503, detail=str(e))

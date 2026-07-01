@@ -23,7 +23,7 @@ app.add_middleware(
 
 app.include_router(mandi_router, prefix="/mandi", tags=["Mandi Market Rates"])
 app.include_router(diagnose_router, prefix="/diagnose", tags=["Leaf Diagnosis"])
-app.include_router(planner_router, prefix="/planner", tags=["Fertilizer Planner"])
+app.include_router(planner_router, prefix="/planner", tags=["Fertilizer Planner"])  #ignore nonfunc errors
 app.include_router(voice_router, prefix="/chat/voice", tags=["Voice Assistant"])
 
 # 2. Load Data & Models
@@ -35,7 +35,7 @@ try:
     # Load Regional Nutrient CSV
     # skipping 2 rows because your specific CSV had headers on row 3
     nutrient_df = pd.read_csv("data/raw/Nutrient.csv", skiprows=2)
-    nutrient_df.columns = [c.strip().replace(' ', '_') for c in nutrient_df.columns]
+    nutrient_df.columns = [c.strip().replace(' ', '_') for c in nutrient_df.columns]  #ignore nonfunc errors
 except Exception as e:
     print(f"Initialization Error: {e}")
 
@@ -65,20 +65,20 @@ def home():
 @app.post("/predict")
 async def predict_crop(data: CropInput):
     # ML Prediction
-    features = np.array([[data.N, data.P, data.K, data.temperature, data.humidity, data.ph, data.rainfall]])
+    features = np.array([[data.N, data.P, data.K, data.temperature, data.humidity, data.ph, data.rainfall]])  #ignore nonfunc errors
     prediction_numeric = model.predict(features)
     crop_name = le.inverse_transform(prediction_numeric)[0]
 
     return {
         "recommended_crop": crop_name,
         "input_summary": data.dict(),
-        "next_steps": f"You can ask our AI assistant how to grow {crop_name} effectively."
+        "next_steps": f"You can ask our AI assistant how to grow {crop_name} effectively."  #ignore nonfunc errors
     }
 
 
 @app.get("/regional-stats/{state}")
 async def get_state_data(state: str):
-    state_data = nutrient_df[nutrient_df['State'].str.contains(state, case=False, na=False)]
+    state_data = nutrient_df[nutrient_df['State'].str.contains(state, case=False, na=False)]  #ignore nonfunc errors
     if state_data.empty:
         raise HTTPException(status_code=404, detail="State data not found.")
 

@@ -6,6 +6,7 @@ sys.path.insert(0, current_dir)
 sys.path.insert(1, os.path.dirname(current_dir))
 
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 import joblib
 import numpy as np
@@ -18,6 +19,8 @@ from routers.diagnose import router as diagnose_router
 from routers.voice import router as voice_router
 from routers.mandi import router as mandi_router
 from routers.planner import router as planner_router
+from routers.advisor import router as advisor_router
+from routers.council import router as council_router
 
 # 1. Initialize App
 app = FastAPI(title="KrishiMitra Intelligence API")
@@ -27,10 +30,18 @@ app.include_router(diagnose_router, prefix="/diagnose", tags=["Leaf Diagnosis"])
 app.include_router(voice_router, prefix="/chat/voice", tags=["Voice Assistant"])
 app.include_router(mandi_router, prefix="/mandi", tags=["Mandi Market Rates"])
 app.include_router(planner_router, prefix="/planner", tags=["Fertilizer Planner"])
+app.include_router(advisor_router, prefix="/advisor", tags=["Unified Advisor & Council Models"])
+app.include_router(council_router, prefix="/council", tags=["Council of Models"])
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "https://krishimitra.vercel.app",
+        "*",  # keep wildcard for dev convenience; remove in production
+    ],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -38,11 +49,11 @@ app.add_middleware(
 # 2. Load Data & Models
 try:
     # Load ML Model & Encoder
-    model = joblib.load("models/crop_recommender_model.pkl")
-    le = joblib.load("models/label_encoder.pkl")
+    model = joblib.load(os.path.join(os.path.dirname(current_dir), "models", "crop_recommender_model.pkl"))
+    le = joblib.load(os.path.join(os.path.dirname(current_dir), "models", "label_encoder.pkl"))
     
     # Load Regional Nutrient CSV
-    nutrient_df = pd.read_csv("data/raw/Nutrient.csv", skiprows=2)
+    nutrient_df = pd.read_csv(os.path.join(current_dir, "data", "raw", "Nutrient.csv"), skiprows=2)
     nutrient_df.columns = [c.strip().replace(' ', '_') for c in nutrient_df.columns]
 except Exception as e:
     print(f"Initialization Error: {e}")
@@ -61,9 +72,18 @@ class ChatQuery(BaseModel):
     question: str
 
 # 4. Endpoints
-@app.get("/")
+@app.get("/health", tags=["System"])
+async def health_check():
+    """Readiness / liveness probe."""
+    return {"status": "ok"}
+
+@app.get("/", response_class=HTMLResponse)
 def home():
-    return {"status": "Online", "project": "KrishiMitra"}
+    template_path = os.path.join(current_dir, "templates", "index.html")
+    if os.path.exists(template_path):
+        with open(template_path, "r", encoding="utf-8") as f:
+            return HTMLResponse(content=f.read())
+    return HTMLResponse(content="<h1>KrishiMitra backend is online!</h1>")
 
 @app.post("/predict")
 async def predict_crop(data: CropInput):

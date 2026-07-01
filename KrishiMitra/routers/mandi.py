@@ -7,10 +7,12 @@ Connects to CEDA API with fallback to simulated live market data.
 from fastapi import APIRouter, HTTPException, Query
 from typing import Optional
 from ..services.mandi_client import fetch_mandi_rates_ceda, fetch_mandi_rates_mock
+
 router = APIRouter()
 
 
 @router.get("/")
+@router.get("/rates")
 async def get_mandi_rates(
     commodity: str = Query(..., description="Crop name, e.g., Wheat, Rice, Cotton, Maize"),
     state: Optional[str] = Query(None, description="State filter, e.g., Maharashtra, Punjab"),

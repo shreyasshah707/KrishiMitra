@@ -5,7 +5,7 @@ POST /diagnose — Upload a leaf image, get disease diagnosis.
 Uses Gemini Vision under the hood.
 """
 from fastapi import APIRouter, UploadFile, File, HTTPException  # type: ignore[import]
-from ..services.gemini_vision import analyze_leaf_image
+from services.gemini_vision import analyze_leaf_image
 router = APIRouter()
 
 

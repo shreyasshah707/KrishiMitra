@@ -5,11 +5,15 @@ POST /planner — Accepts soil and crop data, returns a fertilizer
 recommendation using the trained RandomForest model.
 """
 
+import os
+import sys
+
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 
 
-from ..ml.inference import predict_fertilizer, load_config
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from ml.inference import predict_fertilizer, load_config
 
 router = APIRouter()
 
