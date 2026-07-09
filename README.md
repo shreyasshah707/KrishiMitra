@@ -46,7 +46,7 @@ KrishiMitra combines machine learning, rule-based advisory logic, and generative
    ```
 4. Start the backend:
    ```bash
-   uvicorn main:app --reload
+   uvicorn KrishiMitra.main:app --reload
    ```
 5. Start the frontend:
    ```bash
