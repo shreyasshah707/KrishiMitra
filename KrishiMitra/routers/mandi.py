@@ -6,7 +6,7 @@ Connects to CEDA API with fallback to simulated live market data.
 """
 from fastapi import APIRouter, HTTPException, Query
 from typing import Optional
-from ..services.mandi_client import fetch_mandi_rates_ceda, fetch_mandi_rates_mock
+from services.mandi_client import fetch_mandi_rates_ceda, fetch_mandi_rates_mock
 
 router = APIRouter()
 

@@ -18,7 +18,8 @@ langchain-huggingface
 chromadb
 sentence-transformers
 pypdf
-google-generativeai
+google-genai
 httpx
 tensorflow
 Pillow
+sarvamai
