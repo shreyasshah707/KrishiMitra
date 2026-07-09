@@ -9,7 +9,7 @@ import httpx
 from typing import Optional, List
 CEDA_BASE_URL = "https://api.ceda.ashoka.edu.in/v1"
 
-    
+
 async def fetch_mandi_rates_ceda(commodity: str, state: Optional[str] = None) -> List[dict]:
     """
     Fetch mandi rates from the CEDA public API.
@@ -48,6 +48,8 @@ async def fetch_mandi_rates_ceda(commodity: str, state: Optional[str] = None) ->
     except Exception as e:
         print(f"CEDA Mandi API Error: {e}")
         return []
+
+    
 async def fetch_mandi_rates_mock(commodity: str, state: Optional[str] = None) -> List[dict]:
     """
     Fallback mock generator representing actual daily market price feeds
