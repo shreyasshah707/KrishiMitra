@@ -5,6 +5,5 @@ check_models.py
 __pycache__
 venv/
 *.pyc
-models/*.pkl
 .DS_Store
 venv311/
