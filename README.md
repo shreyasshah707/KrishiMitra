@@ -29,16 +29,28 @@ KrishiMitra combines machine learning, rule-based advisory logic, and generative
 - **Frontend/backend Fallback Routing** for local development and API resilience
 
 ## Startup
-1. Install backend dependencies:
+1. (Recommended) Set up and activate a Python virtual environment:
+   - On Windows (PowerShell):
+     ```powershell
+     python -m venv venv311
+     .\venv311\Scripts\Activate.ps1
+     ```
+   - On macOS/Linux:
+     ```bash
+     python3 -m venv venv311
+     source venv311/bin/activate
+     ```
+2. Install backend dependencies (inside the active virtual environment):
    ```bash
    pip install -r requirements.txt
    ```
-2. Install frontend dependencies:
+3. Install frontend dependencies:
    ```bash
    cd frontend
    npm install
+   cd ..
    ```
-3. Create a `.env` file in the root directory (or in the `KrishiMitra/` directory) with required keys:
+4. Create a `.env` file in the root directory with required keys:
    ```bash
    GOOGLE_API_KEY=your_google_api_key_here
    SARVAM_API_KEY=your_sarvam_api_key_here
@@ -46,16 +58,20 @@ KrishiMitra combines machine learning, rule-based advisory logic, and generative
    INDIA_DATAGOV_API_KEY=your_india_data_gov_key_here
    CEDA_API_KEY=your_ceda_api_key_here
    ```
-4. Start the backend:
+5. Start the backend (run from the **repository root directory**, e.g., `KrishiMitra v2`):
    ```bash
+   # If uvicorn is recognized in your path:
    uvicorn KrishiMitra.main:app --reload
+
+   # If uvicorn is not recognized as a command:
+   python -m uvicorn KrishiMitra.main:app --reload
    ```
-5. Start the frontend:
+6. Start the frontend:
    ```bash
    cd frontend
    npm run dev
    ```
-6. Open the Next.js frontend at `http://localhost:3000`, or view the static prototype by opening `KrishiMitra/templates/index.html` in a browser.
+7. Open the Next.js frontend at `http://localhost:3000`, or view the static prototype by opening `KrishiMitra/templates/index.html` in a browser.
 
 ## Keys Setup
 - Copy `.env.example` to `.env` and replace every placeholder with a private value from your local secret store.
