@@ -1,33 +1,35 @@
-# KrishiMitra V2.0 🌾
+# KrishiMitra V2.5 🌾
 
-KrishiMitra V2.0 is the current integrated farm intelligence release, pairing a FastAPI backend with a Next.js frontend and voice-enabled advisory workflows.
+KrishiMitra V2.5 is the advanced farm intelligence release, featuring a modular FastAPI backend with unified model advisory endpoints, a comprehensive Next.js frontend, and real-time voice and diagnostics workflows.
 
 ## Overview
 KrishiMitra combines machine learning, rule-based advisory logic, and generative AI to deliver:
 - Crop recommendations based on soil, season, and input data
 - Mandi and market insights for better pricing decisions
 - Soil health diagnostics and fertilizer suggestions
-- A responsive UI shell for quick farmer-facing interactions
+- A responsive Next.js web application with dashboard, mapping, AI assistant, and reports
 - Voice chat support for spoken farm queries and audio responses
+- A "Council of Models" and Unified Advisor interface for agricultural advice
 
-## What’s included in V2.0
-- `main.py` — FastAPI entrypoint for the backend services
-- `KrishiMitra/routers/` — API routers for diagnosis, mandi, planner, and voice
-- `KrishiMitra/services/` — external service integrations and helper clients
+## What’s included in V2.5
+- `KrishiMitra/main.py` — Modular FastAPI entrypoint for the backend services
+- `KrishiMitra/routers/` — API routers for diagnosis, mandi, planner, voice, advisor, and council of models
+- `KrishiMitra/services/` — external service integrations (Gemini, Sarvam, Mandi, Fertilizer Engine)
 - `KrishiMitra/ml/` — dataset, model, training, and inference utilities
-- `KrishiMitra/templates/index.html` — frontend UI prototype for the KrishiMitra dashboard
-- `frontend/` — Next.js application for the assistant UI, dashboard, and map experience
+- `KrishiMitra/templates/index.html` — static frontend UI prototype for the dashboard
+- `frontend/` (and `KrishiMitra/frontend/`) — Fully integrated Next.js application for the assistant UI, dashboard, maps, risk alerts, and soil health
 
 ## Key Features
-- **Crop recommendation engine** using agricultural data and ML models
-- **RAG-enabled advisory** leveraging knowledge base documents and LLM responses
-- **Config-driven workflow** for training, inference, and seed/fertilizer routes
-- **Prototype UI** at `KrishiMitra/templates/index.html`
-- **Voice assistant** with microphone capture, transcription, and audio playback
-- **Frontend/backend fallback routing** for local development and API resilience
+- **Crop Recommendation Engine** using agricultural data and ML models (via `/predict`)
+- **Unified Advisor & Council of Models** (`/advisor`, `/council`) leveraging multiple LLMs to collaborate on complex farming inquiries
+- **RAG-enabled Advisory** leveraging knowledge base documents and LLM responses
+- **Config-driven Workflow** for training, inference, and seed/fertilizer routes
+- **Voice Assistant** with microphone capture, transcription, and audio playback (`/chat/voice`)
+- **Next.js Web Application** offering dashboards, interactive map explorer, soil health analytics, and risk alerts
+- **Frontend/backend Fallback Routing** for local development and API resilience
 
 ## Startup
-1. Install dependencies:
+1. Install backend dependencies:
    ```bash
    pip install -r requirements.txt
    ```
@@ -36,7 +38,7 @@ KrishiMitra combines machine learning, rule-based advisory logic, and generative
    cd frontend
    npm install
    ```
-3. Create a `.env` file with required keys, for example:
+3. Create a `.env` file in the root directory (or in the `KrishiMitra/` directory) with required keys:
    ```bash
    GOOGLE_API_KEY=your_google_api_key_here
    SARVAM_API_KEY=your_sarvam_api_key_here
@@ -53,7 +55,7 @@ KrishiMitra combines machine learning, rule-based advisory logic, and generative
    cd frontend
    npm run dev
    ```
-6. Open the UI prototype by opening `KrishiMitra/templates/index.html` in a browser, or use the Next.js frontend at `http://localhost:3000`.
+6. Open the Next.js frontend at `http://localhost:3000`, or view the static prototype by opening `KrishiMitra/templates/index.html` in a browser.
 
 ## Keys Setup
 - Copy `.env.example` to `.env` and replace every placeholder with a private value from your local secret store.
@@ -65,14 +67,8 @@ KrishiMitra combines machine learning, rule-based advisory logic, and generative
 ## Notes
 - This branch intentionally excludes large local artifacts and virtual environment files.
 - Large model binaries and environment dependencies should be handled outside Git or via Git LFS.
-- The UI file is a static frontend prototype; further integration is recommended for production.
+- The root-level `frontend` is a fully tracked directory instead of a broken git submodule link.
 
 ## Branch details
-- Branch: `KrishiMitra-V2.0`
-- Target: Integrated KrishiMitra release with backend, frontend, voice, and advisory workflows.
-
-## Next steps
-- Connect `index.html` to the backend APIs
-- Add template rendering or static file serving in FastAPI
-- Clean up and modularize the UI experience for farm advisory workflows
-- Keep frontend and backend environment variables in sync during local development
+- Branch: `Krishimitra.V2.5`
+- Target: Advanced KrishiMitra release with unified model advisory, integrated Next.js frontend, and modular backend API.
