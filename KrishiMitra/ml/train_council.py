@@ -30,17 +30,17 @@ np.random.seed(42)
 n_samples = 15000
 
 print("=" * 65)
-print("   KrishiMitra — Council Models Generator & Trainer")
+print("   KrishiMitra - Council Models Generator & Trainer")
 print("=" * 65)
 
 # 1. ── Load Crop Classes from Existing Label Encoder ──
 original_le_path = os.path.join(models_dir, "label_encoder.pkl")
 if os.path.exists(original_le_path):
-    print(f"📖 Loading existing crop label encoder: {original_le_path}")
+    print(f"Loading existing crop label encoder: {original_le_path}")
     original_le = joblib.load(original_le_path)
     crop_classes = list(original_le.classes_)
 else:
-    print("⚠️  Warning: original label_encoder.pkl not found! Using default 22 crop classes.")
+    print("Warning: original label_encoder.pkl not found! Using default 22 crop classes.")
     crop_classes = [
         'rice', 'maize', 'chickpea', 'kidneybeans', 'pigeonpeas', 'mothbeans',
         'mungbean', 'blackgram', 'lentil', 'pomegranate', 'banana', 'mango',
@@ -49,7 +49,7 @@ else:
     ]
 
 # 2. ── Generate Shared Feature Inputs ──
-print("🎲 Generating 15,000 synthetic soil and environment profiles...")
+print("Generating 15,000 synthetic soil and environment profiles...")
 N = np.random.uniform(0, 140, n_samples)
 P = np.random.uniform(0, 145, n_samples)
 K = np.random.uniform(0, 205, n_samples)
@@ -116,11 +116,11 @@ soil_model.fit(X_tr, y_tr)
 
 y_pred = soil_model.predict(X_te)
 soil_r2 = r2_score(y_te, y_pred)
-print(f"📊 Soil Health Scorer Test R² Score: {soil_r2:.4f} (Target: >0.8500)")
+print(f"Soil Health Scorer Test R^2 Score: {soil_r2:.4f} (Target: >0.8500)")
 
 soil_model_path = os.path.join(models_dir, "soil_health_model.pkl")
 joblib.dump(soil_model, soil_model_path)
-print(f"💾 Saved soil model to: {soil_model_path}")
+print(f"Saved soil model to: {soil_model_path}")
 
 # =====================================================================
 # MODEL 2: Yield Predictor
@@ -159,7 +159,7 @@ yield_le = LabelEncoder()
 yield_le.fit(crop_classes)
 yield_le_path = os.path.join(models_dir, "yield_label_encoder.pkl")
 joblib.dump(yield_le, yield_le_path)
-print(f"💾 Saved yield label encoder to: {yield_le_path}")
+print(f"Saved yield label encoder to: {yield_le_path}")
 
 crops_encoded = yield_le.transform(crops)
 
@@ -177,11 +177,11 @@ yield_model.fit(X_tr, y_tr)
 
 y_pred = yield_model.predict(X_te)
 yield_r2 = r2_score(y_te, y_pred)
-print(f"📊 Yield Predictor Test R² Score: {yield_r2:.4f} (Target: >0.8500)")
+print(f"Yield Predictor Test R^2 Score: {yield_r2:.4f} (Target: >0.8500)")
 
 yield_model_path = os.path.join(models_dir, "yield_predictor_model.pkl")
 joblib.dump(yield_model, yield_model_path)
-print(f"💾 Saved yield model to: {yield_model_path}")
+print(f"Saved yield model to: {yield_model_path}")
 
 # =====================================================================
 # MODEL 3: Irrigation Scheduler
@@ -215,12 +215,12 @@ irr_model.fit(X_tr, y_tr)
 
 y_pred = irr_model.predict(X_te)
 irr_r2 = r2_score(y_te, y_pred)
-print(f"📊 Irrigation Scheduler Test R² Score: {irr_r2:.4f} (Target: >0.8500)")
+print(f"Irrigation Scheduler Test R^2 Score: {irr_r2:.4f} (Target: >0.8500)")
 
 irr_model_path = os.path.join(models_dir, "irrigation_model.pkl")
 joblib.dump(irr_model, irr_model_path)
-print(f"💾 Saved irrigation model to: {irr_model_path}")
+print(f"Saved irrigation model to: {irr_model_path}")
 
 print("\n" + "=" * 65)
-print("   🎉 All 3 Council Models Generated & Saved Successfully!")
+print("   All 3 Council Models Generated & Saved Successfully!")
 print("=" * 65)

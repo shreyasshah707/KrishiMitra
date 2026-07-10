@@ -32,7 +32,7 @@ def load_raw_data(config: dict) -> pd.DataFrame:
         df[col].fillna(df[col].median(), inplace=True)
     for col in df.select_dtypes(include=["object"]).columns:
         df[col].fillna(df[col].mode()[0], inplace=True)
-    print(f"✅ Loaded raw data: {df.shape[0]} rows × {df.shape[1]} columns")
+    print(f"Loaded raw data: {df.shape[0]} rows x {df.shape[1]} columns")
     return df
 def augment_data(df: pd.DataFrame, config: dict) -> pd.DataFrame:
     """
@@ -60,7 +60,7 @@ def augment_data(df: pd.DataFrame, config: dict) -> pd.DataFrame:
                     new_row[col] = max(0, row[col] + noise)
             augmented_rows.append(new_row)
     augmented_df = pd.concat([df, pd.DataFrame(augmented_rows)], ignore_index=True)
-    print(f"✅ Augmented data: {df.shape[0]} → {augmented_df.shape[0]} rows "
+    print(f"Augmented data: {df.shape[0]} -> {augmented_df.shape[0]} rows "
           f"(×{aug_factor} synthetic copies)")
     return augmented_df
 def encode_features(df: pd.DataFrame, config: dict, fit: bool = True,
@@ -121,14 +121,14 @@ def prepare_data(config: dict):
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=test_size, random_state=seed, stratify=y
     )
-    print(f"✅ Split: {X_train.shape[0]} train / {X_test.shape[0]} test samples")
+    print(f"Split: {X_train.shape[0]} train / {X_test.shape[0]} test samples")
     # Save encoders and scaler for later inference use
     os.makedirs(config["model"]["save_dir"], exist_ok=True)
     joblib.dump(encoders, os.path.join(
         config["model"]["save_dir"], config["model"]["feature_encoders"]))
     joblib.dump(scaler, os.path.join(
         config["model"]["save_dir"], config["model"]["scaler"]))
-    print(f"✅ Saved encoders & scaler to {config['model']['save_dir']}/")
+    print(f"Saved encoders & scaler to {config['model']['save_dir']}/")
     return X_train, X_test, y_train, y_test, encoders, scaler
 if __name__ == "__main__":
     cfg = load_config()

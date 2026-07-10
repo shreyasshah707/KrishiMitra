@@ -27,6 +27,28 @@ KrishiMitra combines machine learning, rule-based advisory logic, and generative
 - **Voice Assistant** with microphone capture, transcription, and audio playback (`/chat/voice`)
 - **Next.js Web Application** offering dashboards, interactive map explorer, soil health analytics, and risk alerts
 - **Frontend/backend Fallback Routing** for local development and API resilience
+## Generating Machine Learning Models
+Since trained model files (`.pkl`) are binary files and excluded from Git by default, they must either be copied into the `models/` directory manually or generated locally. 
+
+To train and generate all the required model files locally:
+1. **Train the Crop Recommender model**:
+   ```bash
+   python KrishiMitra/ml/train_crop_recommender.py
+   ```
+2. **Train the Fertilizer model** (run from inside the `KrishiMitra` directory):
+   ```bash
+   cd KrishiMitra
+   python ml/train.py
+   cd ..
+   ```
+3. **Train the Council models** (run from inside the `KrishiMitra` directory):
+   ```bash
+   cd KrishiMitra
+   python ml/train_council.py
+   cd ..
+   ```
+
+This will automatically create a `models/` directory in the project root and populate it with all 6 required `.pkl` artifacts.
 
 ## Startup
 1. (Recommended) Set up and activate a Python virtual environment:

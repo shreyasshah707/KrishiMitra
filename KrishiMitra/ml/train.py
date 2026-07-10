@@ -40,14 +40,14 @@ def train(config_path: str = "ml/config.yaml"):
       7. Log experiment results
     """
     print("=" * 60)
-    print("  KrishiMitra — Fertilizer Model Training")
+    print("  KrishiMitra - Fertilizer Model Training")
     print("=" * 60)
     # ── Load config & data ──
     config = load_config(config_path)
     X_train, X_test, y_train, y_test, encoders, scaler = prepare_data(config)
     # ── Build model ──
     model = build_model(config)
-    print(f"\n🏗️  Model: RandomForestClassifier")
+    print(f"\nModel: RandomForestClassifier")
     print(f"   Trees: {model.n_estimators}")
     print(f"   Max depth: {model.max_depth or 'unlimited'}")
     print(f"   Class weight: {model.class_weight}")
@@ -55,17 +55,17 @@ def train(config_path: str = "ml/config.yaml"):
     # Since RandomForest isn't epoch-based, we use k-fold CV to
     # estimate generalization performance before final training.
     cv_folds = config["training"]["cv_folds"]
-    print(f"\n📊 Running {cv_folds}-fold cross-validation...")
+    print(f"\nRunning {cv_folds}-fold cross-validation...")
     cv_accuracy = cross_val_score(
         model, X_train, y_train, cv=cv_folds, scoring="accuracy"
     )
     cv_f1 = cross_val_score(
         model, X_train, y_train, cv=cv_folds, scoring="f1_weighted"
     )
-    print(f"   CV Accuracy: {cv_accuracy.mean():.4f} ± {cv_accuracy.std():.4f}")
-    print(f"   CV F1 (weighted): {cv_f1.mean():.4f} ± {cv_f1.std():.4f}")
+    print(f"   CV Accuracy: {cv_accuracy.mean():.4f} +/- {cv_accuracy.std():.4f}")
+    print(f"   CV F1 (weighted): {cv_f1.mean():.4f} +/- {cv_f1.std():.4f}")
     # ── Train final model ──
-    print(f"\n🚀 Training final model on {X_train.shape[0]} samples...")
+    print(f"\nTraining final model on {X_train.shape[0]} samples...")
     start_time = time.time()
     model.fit(X_train, y_train)
     train_time = time.time() - start_time
@@ -75,7 +75,7 @@ def train(config_path: str = "ml/config.yaml"):
     test_accuracy = accuracy_score(y_test, y_pred)
     test_f1 = f1_score(y_test, y_pred, average="weighted")
     target_names = list(encoders["__target__"].classes_)
-    print(f"\n📈 Test Set Results:")
+    print(f"\nTest Set Results:")
     print(f"   Accuracy: {test_accuracy:.4f}")
     print(f"   F1 Score: {test_f1:.4f}")
     print(f"\n{classification_report(y_test, y_pred, target_names=target_names)}")
@@ -84,16 +84,16 @@ def train(config_path: str = "ml/config.yaml"):
     cat_cols = [c.strip() for c in config["features"]["categorical"]]
     feature_names = num_cols + cat_cols
     importances = get_feature_importance(model, feature_names)
-    print("📊 Feature Importances:")
+    print("Feature Importances:")
     for feat, imp in importances.items():
-        bar = "█" * int(imp * 50)
+        bar = "#" * int(imp * 50)
         print(f"   {feat:<15s} {imp:.4f} {bar}")
     # ── Save model checkpoint ──
     save_dir = config["model"]["save_dir"]
     os.makedirs(save_dir, exist_ok=True)
     model_path = os.path.join(save_dir, config["model"]["filename"])
     joblib.dump(model, model_path)
-    print(f"\n💾 Model saved to: {model_path}")
+    print(f"\nModel saved to: {model_path}")
     # ── Experiment Log ──
     log_dir = config["logging"]["log_dir"]
     os.makedirs(log_dir, exist_ok=True)
@@ -125,9 +125,9 @@ def train(config_path: str = "ml/config.yaml"):
     existing_logs.append(experiment)
     with open(log_path, "w") as f:
         json.dump(existing_logs, f, indent=2)
-    print(f"📝 Experiment logged to: {log_path}")
+    print(f"Experiment logged to: {log_path}")
     print("\n" + "=" * 60)
-    print("  ✅ Training Complete!")
+    print("  Training Complete!")
     print("=" * 60)
     return model, encoders, scaler
 if __name__ == "__main__":
