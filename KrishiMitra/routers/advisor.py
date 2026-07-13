@@ -19,7 +19,7 @@ import numpy as np
 from dotenv import load_dotenv
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_community.vectorstores import Chroma
-from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 
 load_dotenv()
 
@@ -246,7 +246,7 @@ def get_rag_context(crop: str) -> str:
     if not os.path.exists(chroma_path):
         return "No local agricultural disease guides context available. Rely on general agronomy knowledge."
     try:
-        embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+        embeddings = GoogleGenerativeAIEmbeddings(model="gemini-embedding-001")
         vector_db = Chroma(persist_directory=chroma_path, embedding_function=embeddings)
         docs = vector_db.similarity_search(f"How to optimize yield, manage soil health, and plan irrigation for {crop}", k=3)
         return "\n\n".join([doc.page_content for doc in docs])

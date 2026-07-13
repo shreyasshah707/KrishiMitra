@@ -14,9 +14,9 @@ langchain-core
 langchain-community
 langchain-openai
 langchain-google-genai
-langchain-huggingface
+
 chromadb
-sentence-transformers
+
 pypdf
 google-genai
 httpx
