@@ -943,7 +943,24 @@ export function CouncilResponseCards() {
             index={index}
           />
         )
-      : null,
+      : (index: number) => (
+          <CouncilCard
+            key="growth_stage"
+            title="Growth Stage"
+            icon={<Sprout size={16} />}
+            theme="teal"
+            index={index}
+          >
+            <div className={cn("rounded-lg p-4 text-center", THEMES.teal.soft)}>
+              <p className="text-sm font-semibold text-slate-300">
+                Not available in this version
+              </p>
+              <p className="mt-1 text-xs text-slate-500">
+                Planned for v2 with real field imagery data
+              </p>
+            </div>
+          </CouncilCard>
+        ),
     pestIdentifier?.detected === true
       ? (index: number) => (
           <PestIdentifierCard

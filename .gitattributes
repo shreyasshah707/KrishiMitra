@@ -1,1 +1,4 @@
 models/*.pkl filter=lfs diff=lfs merge=lfs -text
+models/*.h5 filter=lfs diff=lfs merge=lfs -text
+KrishiMitra/models/*.pkl filter=lfs diff=lfs merge=lfs -text
+KrishiMitra/models/*.h5 filter=lfs diff=lfs merge=lfs -text
