@@ -118,3 +118,41 @@ async def chat_with_ai(query: ChatQuery):
 async def setup_db():
     build_vector_db()
     return {"message": "Database rebuild triggered"}
+
+import os
+import chromadb
+from fastapi import HTTPException
+
+@app.get("/debug/db-check")
+async def debug_database_verification():
+    """
+    Temporary Hackathon Diagnostic Route: Reads the local embedded ChromaDB
+    directory inside the Render container and returns collection metrics for free.
+    """
+    # Use the exact local storage path directory defined in your rag_engine.py
+    chroma_path = "chroma_db" 
+    
+    if not os.path.exists(chroma_path):
+        return {
+            "status": "Offline / Uninitialized",
+            "message": f"Directory path '{chroma_path}' not found on disk container storage."
+        }
+        
+    try:
+        # Initialize an isolated transient pointer to count records
+        client = chromadb.PersistentClient(path=chroma_path)
+        collections_data = []
+        
+        for collection in client.list_collections():
+            collections_data.append({
+                "collection_name": collection.name,
+                "total_records_indexed": collection.count()
+            })
+            
+        return {
+            "status": "Healthy & Persistent",
+            "chroma_directory_found": True,
+            "active_collections": collections_data
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database connection trace error: {str(e)}")
