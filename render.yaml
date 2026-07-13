@@ -1,0 +1,21 @@
+services:
+  # Your existing verified FastAPI Web Service
+  - type: web
+    name: krishimitra-backend
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn KrishiMitra.main:app --host 0.0.0.0 --port $PORT
+
+  # NEW: Render Workflows Track Implementation
+  - type: workflow
+    name: krishimitra-voice-tasks
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python KrishiMitra/tasks.py
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: GOOGLE_API_KEY
+        sync: true
+      - key: SARVAM_API_KEY
+        sync: true
