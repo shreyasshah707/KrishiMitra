@@ -2,14 +2,14 @@ services:
   # Your existing verified FastAPI Web Service
   - type: web
     name: krishimitra-backend
-    env: python
+    runtime: python
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn KrishiMitra.main:app --host 0.0.0.0 --port $PORT
 
   # NEW: Render Workflows Track Implementation
   - type: workflow
     name: krishimitra-voice-tasks
-    env: python
+    runtime: python
     buildCommand: pip install -r requirements.txt
     startCommand: python KrishiMitra/tasks.py
     envVars:
